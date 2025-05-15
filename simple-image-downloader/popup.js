@@ -12,6 +12,8 @@ vipButton.addEventListener('click', () => {
     type: 'popup',
     width: 400,
     height: 600,
+    left: Math.round((screen.width - 400) / 2),
+    top: Math.round((screen.height - 600) / 2),
   })
 })
 
