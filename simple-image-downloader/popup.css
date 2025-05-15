@@ -1,7 +1,33 @@
 body {
-  font-family: sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   width: 320px;
-  padding: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #eee;
+}
+
+.main {
+  padding: 12px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+#error-view {
+  padding-bottom: 10px;
+  text-align: center;
 }
 
 #image-grid {
@@ -32,7 +58,19 @@ body {
   transform: scale(1.05);
 }
 
-button {
+#vip-button {
+  background: none;
+  border: 1px solid #4CAF50;
+  color: #4CAF50;
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-left: 8px;
+  width: 64px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#download-all {
   display: block;
   width: 100%;
   padding: 8px;
@@ -42,6 +80,7 @@ button {
   cursor: pointer;
   font-size: 1em;
   border-radius: 4px;
+  margin-top: 10px;
 }
 
 button:hover {

@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Image Downloader</title>
+  <title>艺爪图片下载器</title>
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
-<body>
-  <h1>当前页面图片：</h1>
-  <div id="image-grid">
-    <p>正在加载图片...</p>
-  </div>
-  <button id="download-all">下载全部图片</button>
 
+<body>
+  <div class="header">
+    <h1>艺爪图片下载器</h1>
+    <button id="vip-button">会员</button>
+  </div class="header">
+  <div class="main">
+    <div id="image-grid"></div>
+    <div id="error-view">正在加载图片...</div>
+    <button id="download-all">下载全部</button>
+  </div>
   <script src="popup.js"></script>
 </body>
+
 </html>
