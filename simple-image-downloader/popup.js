@@ -24,8 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function displayImages(urls) {
+  if (!imageGrid || !imageGrid.innerHTML) return;
+  
   imageGrid.innerHTML = ''; // 清空加载提示
-  if (urls.length === 0) {
+  
+  if (!urls || !Array.isArray(urls) || urls.length === 0) {
     imageGrid.innerHTML = '<p>当前页面没有找到图片</p>';
     return;
   }
