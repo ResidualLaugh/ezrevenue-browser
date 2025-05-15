@@ -10,22 +10,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (tabs.length > 0) {
         const currentTab = tabs[0]
         // 在当前标签页执行 Content Script
-        chrome.scripting
-          .executeScript({
-            target: { tabId: currentTab.id },
-            files: ['content.js'], // 要注入的 Content Script 文件
-          })
-          .then((results) => {
-            // 获取content.js返回的图片URL数组
-            const imageUrls = results[0].result;
-            console.log('Images found:', imageUrls);
-            // 将结果发送回Popup
-            sendResponse({success: true, urls: imageUrls});
-          })
-          .catch((error) => {
-            console.error('Error executing content script:', error)
-            sendResponse({success: false, error: 'Could not retrieve images.'})
-          })
+        // 白名单检查 - 只允许http/https/ftp等网页协议
+        if (!currentTab.url || !/^(http|https|ftp):\/\//i.test(currentTab.url)) {
+          sendResponse({success: false, error: '不支持在此类型页面执行脚本'});
+          return true;
+        }
+
+        chrome.scripting.executeScript({
+          target: { tabId: currentTab.id },
+          files: ['content.js'],
+        })
+        .then((results) => {
+          // 获取content.js返回的图片URL数组
+          const imageUrls = results[0].result;
+          console.log('Images found:', imageUrls);
+          // 将结果发送回Popup
+          sendResponse({success: true, urls: imageUrls});
+        })
+        .catch((error) => {
+          console.error('Error executing content script:', error);
+          sendResponse({
+            success: false, 
+            error: '无法获取图片: ' + (error.message || '未知错误')
+          });
+        })
       }
     })
     // 保持异步响应通道开放

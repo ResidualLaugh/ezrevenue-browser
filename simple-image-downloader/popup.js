@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayImages(response.urls);
     } else {
       const errorMsg = response?.error || '获取图片失败';
-      console.error('Error:', errorMsg);
+      console.info('Error:', errorMsg);
       imageGrid.innerHTML = `<p class="error">${errorMsg}</p>`;
     }
   });
