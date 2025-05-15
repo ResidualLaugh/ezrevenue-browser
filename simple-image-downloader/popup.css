@@ -1,0 +1,55 @@
+body {
+  font-family: sans-serif;
+  width: 300px;
+  padding: 10px;
+}
+
+#image-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.image-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  border-bottom: 1px dashed #eee;
+  padding-bottom: 5px;
+}
+
+.image-item input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.image-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.image-item span {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+button:hover {
+  background-color: #45a049;
+}
