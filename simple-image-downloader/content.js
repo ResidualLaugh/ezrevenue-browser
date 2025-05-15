@@ -9,7 +9,10 @@
     ...new Set(
       Array.from(images)
         .map((img) => img.src)
-        .filter((src) => src && !src.startsWith('data:'))
+        .filter((src) => src && 
+          !src.startsWith('data:') && 
+          (src.startsWith('http:') || src.startsWith('https:'))
+        )
     ),
   ]
 

@@ -36,12 +36,14 @@ body {
   gap: 8px;
   max-height: 400px;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 5px;
   margin-bottom: 10px;
 }
 
 .image-item {
   width: 100%;
+  overflow: hidden;
   aspect-ratio: 1;
   cursor: pointer;
   transition: transform 0.2s;

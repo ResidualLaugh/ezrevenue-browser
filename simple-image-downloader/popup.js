@@ -56,9 +56,6 @@ function displayImages(urls) {
     const img = document.createElement('img')
     img.src = url
     img.alt = '图片预览'
-    img.onerror = () => {
-      img.src = 'placeholder.png'
-    }
 
     // 点击单张图片下载
     itemDiv.addEventListener('click', () => {
