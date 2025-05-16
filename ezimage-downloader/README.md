@@ -18,7 +18,7 @@
 2. 打开Chrome浏览器，进入 `chrome://extensions/`
 3. 开启右上角"开发者模式"
 4. 点击"加载已解压的扩展程序"
-5. 选择插件目录 `simple-image-downloader`
+5. 选择插件目录 `ezimage-downloader`
 
 ## 使用说明
 
