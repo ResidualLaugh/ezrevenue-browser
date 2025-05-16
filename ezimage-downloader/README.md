@@ -38,7 +38,7 @@
 
 ## 开发说明
 
-- 技术栈: Chrome扩展API + ES6
+- 技术栈: VSCode + [Cline](https://github.com/cline/cline) + Deepseek V3
 - 主要文件:
   - `background.js` - 后台服务
   - `content.js` - 内容脚本
