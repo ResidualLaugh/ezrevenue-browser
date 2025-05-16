@@ -17,11 +17,16 @@
     }
   },
   "permissions": [
+    "storage",
     "activeTab",
     "scripting",
     "downloads"
   ],
+  "host_permissions": [
+    "https://revenue.ezboti.com/"
+  ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   }
 }

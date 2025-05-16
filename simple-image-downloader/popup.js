@@ -7,13 +7,31 @@ let allImageUrls = []
 
 // 会员按钮点击事件
 vipButton.addEventListener('click', () => {
-  chrome.windows.create({
-    url: 'https://www.ezboti.com',
-    type: 'popup',
-    width: 400,
-    height: 600,
-    left: Math.round((screen.width - 400) / 2),
-    top: Math.round((screen.height - 600) / 2),
+  chrome.runtime.sendMessage({ action: 'getVipInfo' }, (response) => {
+    console.log('getVipInfo response', response)
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError.message)
+      errorView.innerHTML = `<p class="error">${chrome.runtime.lastError.message}</p>`
+      return
+    }
+    if (response && response.success) {
+      let vipInfo = response.data
+      let paywallUrl = vipInfo.home_link.url
+      if (paywallUrl) {
+        chrome.windows.create({
+          url: paywallUrl,
+          type: 'popup',
+          width: 800,
+          height: 600,
+          left: Math.round((screen.width - 800) / 2),
+          top: Math.round((screen.height - 600) / 2),
+        })
+      }
+    } else {
+      const errorMsg = response?.error || '获取会员信息失败'
+      console.info('Error:', errorMsg)
+      errorView.innerHTML = `<p class="error">${errorMsg}</p>`
+    }
   })
 })
 
@@ -21,7 +39,7 @@ vipButton.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
   chrome.runtime.sendMessage({ action: 'getImagesFromTab' }, (response) => {
     if (chrome.runtime.lastError) {
-      console.error(chrome.runtime.lastError)
+      console.error(chrome.runtime.lastError.message)
       errorView.innerHTML = `<p class="error">${chrome.runtime.lastError.message}</p>`
       return
     }
@@ -31,6 +49,20 @@ document.addEventListener('DOMContentLoaded', () => {
       displayImages(response.urls)
     } else {
       const errorMsg = response?.error || '获取图片失败'
+      console.info('Error:', errorMsg)
+      errorView.innerHTML = `<p class="error">${errorMsg}</p>`
+    }
+  })
+  chrome.runtime.sendMessage({ action: 'getVipInfo' }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError.message)
+      errorView.innerHTML = `<p class="error">${chrome.runtime.lastError.message}</p>`
+      return
+    }
+    if (response && response.success) {
+      displayVipInfo(response.data)
+    } else {
+      const errorMsg = response?.error || '获取会员信息失败'
       console.info('Error:', errorMsg)
       errorView.innerHTML = `<p class="error">${errorMsg}</p>`
     }
@@ -68,6 +100,17 @@ function displayImages(urls) {
     itemDiv.appendChild(img)
     imageGrid.appendChild(itemDiv)
   })
+}
+
+function displayVipInfo(vipInfo) {
+  let vipBalance = vipInfo.balance_s.find(
+    (x) => x.equity.alias === 'equity_vip'
+  )
+  if (vipBalance?.is_balance_usable) {
+    vipButton.innerText = '我的会员'
+  } else {
+    vipButton.innerText = '开通会员'
+  }
 }
 
 // 下载全部图片
