@@ -1,10 +1,27 @@
-// popup.js
+/**
+ * 弹出页面主模块
+ * 职责：
+ * 1. 图片展示和交互
+ * 2. 会员状态管理
+ * 3. 支付界面弹窗控制
+ *
+ * @module popup
+ */
 const imageGrid = document.getElementById('image-grid')
 const errorView = document.getElementById('error-view')
 const downloadAllButton = document.getElementById('download-all')
 const vipButton = document.getElementById('vip-button')
 let allImageUrls = []
 
+/**
+ * 获取会员信息
+ * https://www.ezboti.com/docs/revenue/api-customer-info/
+ * @async
+ * @param {Object} [params] 可选参数
+ * @param {boolean} [params.refresh] 是否强制刷新
+ * @returns {Promise<Object>} 会员信息对象
+ * @throws {Error} 获取失败时抛出异常
+ */
 async function getVipInfo(params) {
   const response = await chrome.runtime.sendMessage({
     action: 'getVipInfo',
@@ -21,6 +38,13 @@ async function getVipInfo(params) {
   }
 }
 
+/**
+ * 显示支付界面弹窗
+ * @async
+ * @param {Object} vipInfo 会员信息
+ * @param {Object} vipInfo.home_link 支付界面链接信息
+ * @description 居中显示800x600的支付界面窗口，关闭后刷新会员状态
+ */
 async function showPaywallPopup(vipInfo) {
   let paywallUrl = vipInfo.home_link.url
   if (paywallUrl) {
@@ -83,6 +107,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 })
 
+/**
+ * 展示图片网格
+ * @param {Array<string>} urls 图片URL数组
+ * @description 将图片以网格形式展示，点击单张图片可下载
+ */
 function displayImages(urls) {
   if (!imageGrid) return
 
@@ -127,6 +156,11 @@ function isBalanceUsable(vipInfo) {
   return vipBalance?.is_balance_usable
 }
 
+/**
+ * 更新会员状态显示
+ * @param {Object} vipInfo 会员信息
+ * @description 根据会员状态更新按钮文字(VIP/非VIP)
+ */
 function displayVipInfo(vipInfo) {
   if (isBalanceUsable(vipInfo)) {
     vipButton.innerText = '我的会员'
