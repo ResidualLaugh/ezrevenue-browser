@@ -4,6 +4,8 @@
 
 一款智能提取网页图片并支持批量下载的Chrome浏览器扩展，支持VIP会员功能。
 
+[艺爪图片下载器-插件安装包](https://github.com/guyskk/ezrevenue-browser/releases/download/1.0.0/ezimage-downloader.crx)
+
 ## 功能特性
 
 - 自动提取当前网页所有图片
