@@ -2,32 +2,37 @@
  * 弹出页面主模块
  * 职责：
  * 1. 图片展示和交互
- * 2. 会员状态管理
- * 3. 支付界面弹窗控制
+ * 2. 下载功能控制
+ * 3. 会员状态管理
  *
  * @module popup
  */
+
+// 初始化会员服务
+const vipButton = document.getElementById('vip-button')
 const vipService = createEzrevenueService()
+
+// 更新会员状态显示
+async function updateVipStatus() {
+  const isVip = await vipService.isBalanceUsable()
+  vipButton.innerText = isVip ? '我的会员' : '开通会员'
+  downloadAllButton.innerText = isVip ? '下载全部(VIP)' : '下载全部(开通会员)'
+}
 
 const imageGrid = document.getElementById('image-grid')
 const errorView = document.getElementById('error-view')
 const downloadAllButton = document.getElementById('download-all')
-const vipButton = document.getElementById('vip-button')
 let allImageUrls = []
 
 // 会员按钮点击事件
 vipButton.addEventListener('click', async () => {
-  try {
-    await vipService.showPaywallPopup()
-    await displayVipInfo()
-  } catch (error) {
-    console.error('Error:', error)
-    errorView.innerHTML = `<p class="error">${error.message}</p>`
-  }
+  await vipService.showPaywallPopup()
+  await updateVipStatus()
 })
 
-// 当 Popup 加载时，通知 Background Script 去 Content Script 中获取图片
+// 当 Popup 加载时，初始化会员状态并获取图片
 document.addEventListener('DOMContentLoaded', async () => {
+  await updateVipStatus()
   try {
     const imagesResponse = await chrome.runtime.sendMessage({
       action: 'getImagesFromTab',
@@ -40,12 +45,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.info('Error:', errorMsg)
       errorView.innerHTML = `<p class="error">${errorMsg}</p>`
     }
-  } catch (error) {
-    console.error('Error:', error)
-    errorView.innerHTML = `<p class="error">${error.message}</p>`
-  }
-  try {
-    await displayVipInfo()
   } catch (error) {
     console.error('Error:', error)
     errorView.innerHTML = `<p class="error">${error.message}</p>`
@@ -94,26 +93,13 @@ function displayImages(urls) {
   })
 }
 
-/**
- * 更新会员状态显示
- * @description 根据会员状态更新按钮文字(VIP/非VIP)
- */
-async function displayVipInfo() {
-  let isVip = await vipService.isBalanceUsable()
-  if (isVip) {
-    vipButton.innerText = '我的会员'
-    downloadAllButton.innerText = '全部下载(VIP)'
-  } else {
-    vipButton.innerText = '开通会员'
-    downloadAllButton.innerText = '全部下载(开通VIP)'
-  }
-}
-
 // 下载全部图片
 downloadAllButton.addEventListener('click', async () => {
-  let isVip = await vipService.isBalanceUsable()
+  // 先检查会员状态
+  const isVip = await vipService.isBalanceUsable()
   if (!isVip) {
     await vipService.showPaywallPopup()
+    await updateVipStatus()
     return
   }
   if (allImageUrls.length <= 0) {

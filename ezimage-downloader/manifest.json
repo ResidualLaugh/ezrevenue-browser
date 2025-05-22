@@ -17,10 +17,10 @@
     }
   },
   "permissions": [
-    "storage",
     "activeTab",
     "scripting",
-    "downloads"
+    "downloads",
+    "storage"
   ],
   "host_permissions": [
     "https://revenue.ezboti.com/"

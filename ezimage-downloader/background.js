@@ -1,17 +1,20 @@
+import { registerEzrevenueBackground } from './ezrevenue-sdk/background.js'
+
 /**
  * 后台服务主模块
  * 职责：
  * 1. 消息路由和处理
  * 2. 图片获取和下载
+ * 3. 会员支付服务
  *
  * @module background
  */
-import { registerEzrevenueBackground } from './ezrevenue-sdk/background.js'
 
-// 注册艺爪付费会员service-worker服务
+// 注册艺爪付费会员服务
 registerEzrevenueBackground({
   projectId: '7hm9hwpgny3sa',
   projectSecret: 'z2xfu7urzqqrysu3bk0hg72yhsnpt3ux',
+  paywallAlias: 'paywall_vip'
 })
 
 /**
@@ -19,7 +22,6 @@ registerEzrevenueBackground({
  * 支持的消息类型:
  * - getImagesFromTab: 从当前标签页获取图片
  * - downloadImages: 下载指定图片
- * - getVipInfo: 获取会员信息
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('Received message:', request)
