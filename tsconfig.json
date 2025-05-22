@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "ESNext",
+    "module": "Preserve",
+    "strict": true,
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "outDir": "dist",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "types": [],
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

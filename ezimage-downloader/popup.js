@@ -7,73 +7,19 @@
  *
  * @module popup
  */
+const vipService = createEzrevenueService()
+
 const imageGrid = document.getElementById('image-grid')
 const errorView = document.getElementById('error-view')
 const downloadAllButton = document.getElementById('download-all')
 const vipButton = document.getElementById('vip-button')
 let allImageUrls = []
 
-/**
- * 获取会员信息
- * https://www.ezboti.com/docs/revenue/api-customer-info/
- * @async
- * @param {Object} [params] 可选参数
- * @param {boolean} [params.refresh] 是否强制刷新
- * @returns {Promise<Object>} 会员信息对象
- * @throws {Error} 获取失败时抛出异常
- */
-async function getVipInfo(params) {
-  const response = await chrome.runtime.sendMessage({
-    action: 'getVipInfo',
-    ...(params || {}),
-  })
-  console.log('getVipInfo response', response)
-  if (response && response.success) {
-    let vipInfo = response.data
-    return vipInfo
-  } else {
-    const errorMsg = response?.error || '获取会员信息失败'
-    console.info('Error:', errorMsg)
-    throw new Error(errorMsg)
-  }
-}
-
-/**
- * 显示支付界面弹窗
- * @async
- * @param {Object} vipInfo 会员信息
- * @param {Object} vipInfo.home_link 支付界面链接信息
- * @description 居中显示800x600的支付界面窗口，关闭后刷新会员状态
- */
-async function showPaywallPopup(vipInfo) {
-  let paywallUrl = vipInfo.home_link.url
-  if (paywallUrl) {
-    const popup = await chrome.windows.create({
-      url: paywallUrl,
-      type: 'popup',
-      width: 800,
-      height: 600,
-      left: Math.round((screen.width - 800) / 2),
-      top: Math.round((screen.height - 600) / 2),
-    })
-    const myPopupId = popup.id
-    console.log(`Window created with ID: ${myPopupId}`)
-    const handler = async (windowId) => {
-      if (windowId === myPopupId) {
-        chrome.windows.onRemoved.removeListener(handler)
-        let vipInfo = await getVipInfo({ refresh: true })
-        displayVipInfo(vipInfo)
-      }
-    }
-    chrome.windows.onRemoved.addListener(handler)
-  }
-}
-
 // 会员按钮点击事件
 vipButton.addEventListener('click', async () => {
   try {
-    let vipInfo = await getVipInfo()
-    showPaywallPopup(vipInfo)
+    await vipService.showPaywallPopup()
+    await displayVipInfo()
   } catch (error) {
     console.error('Error:', error)
     errorView.innerHTML = `<p class="error">${error.message}</p>`
@@ -99,8 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     errorView.innerHTML = `<p class="error">${error.message}</p>`
   }
   try {
-    let vipInfo = await getVipInfo()
-    displayVipInfo(vipInfo)
+    await displayVipInfo()
   } catch (error) {
     console.error('Error:', error)
     errorView.innerHTML = `<p class="error">${error.message}</p>`
@@ -149,20 +94,13 @@ function displayImages(urls) {
   })
 }
 
-function isBalanceUsable(vipInfo) {
-  let vipBalance = vipInfo.balance_s.find(
-    (x) => x.equity.alias === 'equity_vip'
-  )
-  return vipBalance?.is_balance_usable
-}
-
 /**
  * 更新会员状态显示
- * @param {Object} vipInfo 会员信息
  * @description 根据会员状态更新按钮文字(VIP/非VIP)
  */
-function displayVipInfo(vipInfo) {
-  if (isBalanceUsable(vipInfo)) {
+async function displayVipInfo() {
+  let isVip = await vipService.isBalanceUsable()
+  if (isVip) {
     vipButton.innerText = '我的会员'
     downloadAllButton.innerText = '全部下载(VIP)'
   } else {
@@ -173,9 +111,9 @@ function displayVipInfo(vipInfo) {
 
 // 下载全部图片
 downloadAllButton.addEventListener('click', async () => {
-  let vipInfo = await getVipInfo()
-  if (!isBalanceUsable(vipInfo)) {
-    showPaywallPopup(vipInfo)
+  let isVip = await vipService.isBalanceUsable()
+  if (!isVip) {
+    await vipService.showPaywallPopup()
     return
   }
   if (allImageUrls.length <= 0) {

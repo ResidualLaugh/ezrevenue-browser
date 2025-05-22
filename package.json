@@ -1,0 +1,36 @@
+{
+  "name": "ezrevenue-browser",
+  "version": "1.0.0",
+  "description": "[艺爪付费(ezrevenue)](https://www.ezboti.com/revenue/)是为开发者提供的会员付费解决方案，可轻松集成到浏览器扩展中实现会员功能。",
+  "author": "guyskk",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build && cp ezrevenue-sdk/*.js ezimage-downloader/ezrevenue-sdk",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "targets": {
+    "background": {
+      "source": "src/background.js",
+      "context": "browser",
+      "distDir": "ezrevenue-sdk",
+      "outputFormat": "esmodule",
+      "optimize": true,
+      "isLibrary": true
+    },
+    "ui": {
+      "source": "src/ui.js",
+      "context": "browser",
+      "distDir": "ezrevenue-sdk",
+      "outputFormat": "global",
+      "optimize": true,
+      "isLibrary": false
+    }
+  },
+  "devDependencies": {
+    "parcel": "^2.15.1"
+  },
+  "dependencies": {
+    "jose": "^6.0.11"
+  },
+  "browserslist": "> 0.5%, last 2 versions, not dead"
+}

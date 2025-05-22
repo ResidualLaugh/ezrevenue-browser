@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from './jose.bundle.js'
+import { SignJWT, jwtVerify } from 'jose'
 import { generateRandomString } from './stringRandom.js'
 
 export function EzrevenueClient({ projectId, projectSecret }) {
