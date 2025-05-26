@@ -9,8 +9,15 @@
  */
 
 // 初始化会员服务
-const vipButton = document.getElementById('vip-button')
 const vipService = createEzrevenueService()
+async function showPaywallPopup() {
+  return await vipService.showPaywallPopup({
+    screenWidth: screen.width,
+    screenHeight: screen.height,
+  })
+}
+
+const vipButton = document.getElementById('vip-button')
 
 // 更新会员状态显示
 async function updateVipStatus() {
@@ -26,7 +33,7 @@ let allImageUrls = []
 
 // 会员按钮点击事件
 vipButton.addEventListener('click', async () => {
-  await vipService.showPaywallPopup()
+  await showPaywallPopup()
   await updateVipStatus()
 })
 
@@ -98,7 +105,7 @@ downloadAllButton.addEventListener('click', async () => {
   // 先检查会员状态
   const isVip = await vipService.isBalanceUsable()
   if (!isVip) {
-    await vipService.showPaywallPopup()
+    await showPaywallPopup()
     await updateVipStatus()
     return
   }

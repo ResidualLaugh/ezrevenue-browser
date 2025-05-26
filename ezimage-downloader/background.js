@@ -14,7 +14,7 @@ import { registerEzrevenueBackground } from './ezrevenue-sdk/background.js'
 registerEzrevenueBackground({
   projectId: '7hm9hwpgny3sa',
   projectSecret: 'z2xfu7urzqqrysu3bk0hg72yhsnpt3ux',
-  paywallAlias: 'paywall_vip'
+  paywallAlias: 'paywall_vip',
 })
 
 /**
@@ -24,13 +24,13 @@ registerEzrevenueBackground({
  * - downloadImages: 下载指定图片
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('Received message:', request)
   const handlerMap = {
     getImagesFromTab: getImagesFromTab,
     downloadImages: downloadImages,
   }
   let handlerFunc = handlerMap[request.action]
   if (handlerFunc) {
+    console.log('Received message:', request)
     handlerFunc(request).then(sendResponse)
     return true
   }

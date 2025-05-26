@@ -4,11 +4,9 @@
 
 免费用户的功能：
 - 会员按钮显示"开通会员"，点击后显示付费界面。
-- 全部下载按钮显示"下载全部(开通会员)"，点击后显示付费界面。
 
 会员用户的功能：
 - 会员按钮显示"我的会员"，点击后显示付费界面。
-- 全部下载按钮显示"下载全部(VIP)"，点击后正常下载全部图片。
 
 ezrevenue-sdk我已添加到项目中，请根据以下教程完成集成。
 
@@ -43,10 +41,21 @@ ezrevenue-sdk/
   └── ui.js         // 支付界面逻辑
 ```
 
-在 `popup.html` 中需要显式引用 `ui.js`，在 `popup.js` 之前引入:
+如果项目使用 popup 展示界面，在 `popup.html` 中需要显式引用 `ui.js`，在 `popup.js` 之前引入:
 ```html
 <script src="ezrevenue-sdk/ui.js"></script>
 <script src="popup.js"></script>
+```
+
+如果项目使用 content script 展示界面，在 `manifest.json` 配置引用 `ui.js`，在 `content.js` 之前引入：
+```json
+{
+  "content_scripts": [
+    {
+      "js": ["ezrevenue-sdk/ui.js", "content.js"]
+    }
+  ]
+}
 ```
 
 ### 3. 后台服务集成
@@ -55,7 +64,8 @@ ezrevenue-sdk/
 ```javascript
 import { registerEzrevenueBackground } from './ezrevenue-sdk/background.js'
 
-registerEzrevenueBackground({
+// 返回的 vipService 可用于在 background 代码中使用会员接口
+const vipService = registerEzrevenueBackground({
   projectId: 'YOUR_PROJECT_ID', // 项目ID，从艺爪后台获取
   projectSecret: 'YOUR_SECRET_KEY', // 项目密钥，从艺爪后台获取
   paywallAlias: 'paywall_vip' // 付费界面别名，可选
@@ -77,7 +87,7 @@ SDK 会自动处理以下功能：
 ```
 
 #### 4.2 初始化支付服务
-在 `popup.js` 中：
+在 `popup.js` 或 `content.js` 中：
 ```javascript
 // createEzrevenueService 函数由引入的 ezrevenue-sdk/ui.js 提供
 const vipService = createEzrevenueService()
@@ -88,7 +98,7 @@ vipButton.addEventListener('click', async () => {
   await updateVipStatus()  // 更新界面上的会员状态显示
 })
 
-// 当 Popup 加载时，更新界面上的会员状态显示
+// 当界面加载时，更新界面上的会员状态显示
 document.addEventListener('DOMContentLoaded', async () => {
   await updateVipStatus()
 })
@@ -131,7 +141,7 @@ downloadButton.addEventListener('click', async () => {
 
 ## API参考
 
-### `function registerEzrevenueBackground(): void`
+### `function registerEzrevenueBackground(): EzrevenueService`
 注册支付后台服务
 
 **参数:**
