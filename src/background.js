@@ -8,15 +8,15 @@ export function createDeviceIdGetter({ prefix, storageKey } = {}) {
   /**
    * 获取或生成设备唯一ID
    * @returns {Promise<string>} 设备唯一ID
-   * @description 优先从browser.storage.local读取设备ID，不存在则生成新ID并存储
+   * @description 优先从browser.storage.sync读取设备ID，不存在则生成新ID并存储到云端同步
    */
   async function getOrCreateDeviceId() {
-    const data = await browser.storage.local.get(storageKey)
+    const data = await browser.storage.sync.get(storageKey)
     let deviceId = data[storageKey]
     if (!deviceId) {
       deviceId = prefix + generateDeviceUniqueId()
       console.log(`create deviceId ${deviceId}`)
-      await browser.storage.local.set({ [storageKey]: deviceId })
+      await browser.storage.sync.set({ [storageKey]: deviceId })
     } else {
       console.log(`get deviceId ${deviceId}`)
     }
